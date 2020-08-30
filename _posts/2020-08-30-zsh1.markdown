@@ -170,11 +170,11 @@ I'm also taking advantage of the fact that zsh lets you expand array elements
 without curly braces: `$arrayVar[$index]` instead of `${arrayVar[$index]}`. And
 using a couple of its expansion modifier flags, which show up in parenteheses
 after the opening delimiter of expansion expressions like array subscripts.
-Here, the (i) flag _inverts_ the lookup, so it returns the index at which the
-element matches the string supplied as a subscript; the (e) _exact_ flag means
+Here, the `(i)` flag _inverts_ the lookup, so it returns the index at which the
+element matches the string supplied as a subscript; the `(e)` _exact_ flag means
 that match has to be exact.  If the string is not found, the expansion returns
-a number greater than the length of the array. So both of the above `if`s are
-simple "is this item in the array" checks.
+a number greater than the length of the array. So both of the above `if` 
+statements are performing simple "is this item in the array" checks.
 
 So that's it for my `.zshenv` and `.zprofile`. My `.zshrc`, on the other hand,
 is already approaching 100 lines, and I have another 180 lines in shell
