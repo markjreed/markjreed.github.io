@@ -1,0 +1,53 @@
+
+shell launched by the login process 
+terminal that were launched by the machine's login process, either because
+they logged in on a terminal interface (in the case of a Mac, that probably
+means they SSHed in) or told the Terminal app to start the shell as a login
+shell. Or just ran it with `--login`. 
+
+`kkk
+different 
+When it comes to shell startup files, zsh has an embarassment of riches. That's basically a multiple-inheritance problem; Zsh is directly inspired by bash and
+tcsh, which were in turn inspired by ksh and the original csh, and all those
+influences accumulate.
+
+The original Bourne shell only sourced any files automatically in login shells;
+these files would presumably set everything they needed in the form of
+environment variables that child shells would inherit. So you got
+`/etc/profile` and `$HOME/.profile` exeucted on initial login, and that was it.
+
+David Korn and team recognized the need to perform some shell initialization
+that wasn't automatically inherited by child processes. So one of the things
+you could do in the `.profile` for ksh was set a parameter called `$ENV` to the
+name of a file; interactive shells would read that file on startup. The most
+common name for the environment file was `.kshrc`, so later versions of ksh
+look for a `.kshrc` if `$ENV` isn't set.
+
+Meanwhile, the C shells had `.[t]cshrc` for all shells and `.login` for login
+shells, but ran them in that order; `.login` was executed _after_ `.cshrc`. They also introduced the complementary `.logout` file, which is executed right 
+before a login shell exits. (You could arrange for something like this in the
+Bourne or Korn shells via `trap`, but there was no file executed
+automatically.)
+
+Bash tried to incorporate the best features of the Korn and C shells while
+maintaining compatibility with the Bourne shell.  So login shells run
+`/etc/profile` just like the Bourne shell, and then look the first of
+`.bash_profile`, `.bash_login`, or `.profile` that exists in the user's home
+directory. And if there's a `.bash_logout` file, it gets run just before a login shell exits.
+
+But the `.kshrc` and `$ENV` functions have been split in Bash. The
+`~/.bashrc` file gets executed in interactive shells, while non-interactive
+ones look for a file to execute in the parameter `$BASH_ENV`.  Bash also lets 
+you specify a different file to run instead of .bashrc with the `--rcfile` 
+option, or tell it not to run one at all with `--norc`.
+
+So with all that history, what did Zsh do? Well, it uses something
+similar to the bash model, but a little less complicated, modified to
+allow more familiarity for csh users. 
+
+The first thing it does is allow you to put your dotfiles somewhere other
+than your home directory; if `$ZDOTDIR` is set in the environment, it
+will look in there instead. The filenames are unchanged, though; even
+in a ZDOTDIR, they start with a period.
+
+Zsh runs global and local versions of these files in this order:
