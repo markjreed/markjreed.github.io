@@ -35,7 +35,7 @@ the latest version in /usr/local/bin, which as of this writing is 5.8. I'll try
 to point out when I'm doing something that won't work in older versions. 
 
 To ensure that I'm always running the correct zsh, I have this in my ~/.zshrc
-file (see below):
+file:
 
     if [[ $(zsh -c 'echo $ZSH_VERSION') > $ZSH_VERSION ]]; then
       exec zsh ${-+-$-} "$@"
