@@ -50,7 +50,7 @@ This file is always run, regardless of whether the shell is login or
 not, interactive or not. There's no way to stop zsh from executing
 this file. So it's a bad idea to put anything in here that writes
 to standard output; that will confuse anything that runs a remote
-non-interactive process, like `scp`. Only things here that need
+non-interactive process, like `scp`. Only put things here that need
 be set for all shells, everywhere.
 
 While you can't stop zsh from sourcing `/etc/zshenv`, the code in
