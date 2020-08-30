@@ -97,18 +97,21 @@ Zsh runs global and local versions of these files in this order:
         not, interactive or not. There's no way to stop zsh from executing
         this file. It can, however, stop zsh from executing any others - if 
         the environment variable GLOBAL_RCS is unset, then none ofthe other
-        `/etc` files will be read; if `RCS` is unset, then none of the user's
+        `/etc` files will be read; if RCS is unset, then none of the user's
         personal startup files will be read. Otherwise, we continue:
 
     ${ZDOTDIR-$HOME}/.zshenv
         Assuming RCS is still set after /etc/zshenv, this file is run - 
         again for all shells, regardless of interactivity or login status.
         So anything that should be set in absolutely all zsh processes goes
-        here. Some users set their environment variables in here, so that
+        here. Some users set things like their PATH in here, so that
         they're set even for shells that aren't children of login shells (which
-        can happen in a GUI terminal environment). But I have Terminal and
-        iTerm configured to start my shells as login shells, and so far have
-        not found anything I need to put in here.
+        can happen in a GUI terminal environment). I have Terminal and
+        iTerm configured to start my shells as login shells, so setting my PATH
+        in .zprofile and exporting it works fine. I do set FPATH here, though,
+        simply because functions are shell-specific, and I don't want ksh 
+        trying to run zsh functions or vice-versa. To prevent that, I don't
+        export FPATH into the environment.
 
     /etc/zprofile
     ${ZDOTDIR-$HOME}/.zprofile
@@ -146,9 +149,9 @@ My .zshenv currently has this in it:
       fpath=($HOME/lib/zsh/functions $fpath)
     fi
 
-I used to set FPATH in the profile and export it, but I might run other
-shells that also use FPATH, and don't want them trying to run zsh functions,
-or vice-versa. So I set it for every zsh shell and don't export it.
+As I said above, I do this here instead of setting FPATH in the profile and
+exporting it so that I don't have one shell trying to execute functions 
+written for a different one. FPATH is not unique to zsh.
 
 My `.zprofile` (actually `lib/zsh/zprofile/main`) is pretty barebones at the
 moment:
