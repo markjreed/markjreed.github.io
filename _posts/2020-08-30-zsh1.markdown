@@ -167,7 +167,7 @@ available in array form under the lowercase version of their name. This makes
 them much easier to manipulate programmatically. 
 
 I'm also taking advantage of the fact that zsh lets you expand array elements
-without curly braces: `RarrayVar[$index]` instead of `${arrayVar[$index]}`. And
+without curly braces: `$arrayVar[$index]` instead of `${arrayVar[$index]}`. And
 using a couple of its expansion modifier flags, which show up in parenteheses
 after the opening delimiter of expansion expressions like array subscripts.
 Here, the (i) flag _inverts_ the lookup, so it returns the index at which the
