@@ -26,8 +26,8 @@ time, which these days usually means because the user has come in remotely via
 SSH, it's automatically marked as a login shell; you can configure
 terminal-emulator applications like Terminal.app and iTerm to launch all shells
 as login, too. Most shells accept either `-l` or `--login` to make a new shell
-a login shell, but the original method used by the login daemon was to set
-`argv[0]` to a value starting with `-`.
+a login shell, but the original method used by login daemons like `sshd` is to set
+`argv[0]` to a value starting with `-` when `exec`'ing the shell.
 
 So whether a shell is login or not, or interactive or not, will determine
 which startup file(s) get executed.
