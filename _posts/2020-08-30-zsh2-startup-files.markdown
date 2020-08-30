@@ -69,7 +69,7 @@ writes output here, or assumes that it's running interactively
 attached to a terminal or anything.
 
 This is a convenient place to set things you want to make absolutely sure are
-always set. Some folks put their like their PATH settings in here, to ensure
+always set. Some folks put their PATH settings in here, to ensure
 that e.g.  remotely-executed scripts can find and run other scripts that live
 in custom locations. In my case, I haven't yet found anything that needs to
 live here.
