@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Bash-ing my head against Zsh, Part 1:Introduction"
-date:   2020-08-29 16:02:01 -0400
+date: 2020-08-30 12:06:22 -0400
 categories: jekyll update
 ---
 As promised in my [last post]({% post_url 2020-08-29-welcome %}), this is

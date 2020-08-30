@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Bash-ing my head against Zsh, Part 2:Startup Files"
-date:   2020-08-29 16:02:01 -0400
+date: 2020-08-30 13:16:25 -0400
 categories: jekyll update
 ---
 ## Zdots and Profiles and Env files, Oh my!
