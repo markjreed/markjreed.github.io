@@ -126,15 +126,16 @@ Zsh runs global and local versions of these files in this order:
          Run before exiting a login shell. I don't do anything with this
          either.
 
+### My setup 
 My home directory dotfiles are actually symlinks into a clone
-of a github repo. I actually have all my shell config files in subdirectories of
-~/lib/_shellname_; each startup file has its own directory, with a `main` file
-that is symlinked to the expected dotfile name, and other files that the
-`main` file sources. That way I can keep things organized with related
-settings grouped together in the same files. I don't currently use ZDOTDIR,
-but just have the symlinks as ~/.zprofile etc. 
+of a github repo where I maintain configuration files, personal scripts, etc. The shell dotfiles live in files named lib/_shellname_/_startupfile_/main, which
+source other files in the same subdirectory. That way I can keep things
+organized with related settings together int he same file. While I could
+put all the symlinks for zsh directly in `lib/zsh` and set ZDOTDIR, I
+don't currently do that.
 
-My .zprofile at the moment is pretty barebones:
+My `.zprofile` (actually `lib/zsh/zprofile/main`) is pretty barebones at the
+moment:
 
     if [[ $path[(ie)/usr/local/bin] > ${#path[@]} ]]; then
       path=($HOME/bin /usr/local/bin /usr/local/sbin $path)
@@ -145,17 +146,19 @@ My .zprofile at the moment is pretty barebones:
     fi
 
 But already you can see I'm embracing some zshisms, specifically the
-inherited-cshism that makes path variables automatically available in 
+inherited csh feature that makes path variables automatically available in 
 array form under the lowercase version of their name. This makes them much
 easier to manipulate programmatically. 
 
 Zsh has a number of expansion modifier flags that are placed in parentheses
 after opening brackets. In the case of an array lookup, the (i) flag
-"inverts" the lookup, so it returns the index at which the string supplied
-_as_ the index is found. If the string is not found, it returns a number greater
+"inverts" the lookup, so it returns the index at which the element matches
+the string supplied between brackets; the (e) flag means that match has to
+be exact.  If the string is not found, the expansion returns a number greater
 than the length of the array. So both of the above `if`s are simple
 "is this item in the array" checks.
 
-My .zshrc, on the other hand, is already approaching 100 lines, and I have 
-another 180 lines in shell function definitions. But we'll talk about 
-all of those settings as ther categories come up.
+So that's it for the `.zprofile`. The `.zshrc`, on the other hand, is already
+approaching 100 lines, and I have another 180 lines in shell function
+definitions. But we'll talk about all of those settings as ther categories come
+up in the following posts.
