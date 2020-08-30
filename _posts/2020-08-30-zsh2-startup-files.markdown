@@ -90,7 +90,6 @@ These run for all interactive shells. Unlike the `bashrc` files, the
 login shells. So anything that's not inheritable that you want in all
 interactive shells should be set here: custom command completion,
 aliases, functions, prompt string settings, etc.
-here.
 
     /etc/zlogin
     ${ZDOTDIR-$HOME}/.zlogin
