@@ -1,0 +1,25 @@
+---
+layout: post
+title:  "Welcome to Marksplaining!"
+date:   2020-08-29 16:02:01 -0400
+categories: jekyll update
+---
+<img src="/assets/headshot.png" align="text-top">
+Hello and welcome. I'm Mark Reed, an information technologist who
+specializes in not specializing – having dabbled in just about all corners of
+the systems administration and software development worlds. I'm currently a
+Cloud Architect with a primary focus on Amazon Web Services.
+
+I've been at this for almost 40 years, over 30 professionally, so I've
+built up a decent store of knowledge, tips, and tricks, and I figured a blog
+is a good way to share them. Despite the name, I will try not to do too much
+\*splaining; as a straight, white, heterosexual cis-male, I'm sure I've done
+plenty of that already.
+
+The immediate impetus for this blog is my adventures in translating my shell
+environment from bash to zsh in response to Apple's default shell change in
+Catalina. If you're at all interested in that journey, please follow along. And
+even if you're not, welcome! Come back sometime, and you might find something
+more relevant to your interests!
+
+– Mark

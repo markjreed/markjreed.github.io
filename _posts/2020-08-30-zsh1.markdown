@@ -1,0 +1,161 @@
+---
+layout: post
+title:  "Bashing my head against Zsh, part 1"
+date:   2020-08-29 16:02:01 -0400
+categories: jekyll update
+---
+As promised in my [last post]({% post_url 2020-08-29-welcome %}), this is
+the documentation of my adoption of the Z shell (zsh), which is the default
+user shell as of MacOS Catalina. Hitherto I've used the Bourne-Again Shell
+(bash).
+
+I live and work at the command line. Virtually all my professional time – what
+isn't spent in the web browser – is spent typing at the shell prompt. So I've
+invested a significant chunk of that time over the years in getting my
+environment just so. And while I'm always tweaking and adding to those
+customizations, I haven't really revisited most of them since the last time I
+changed login shells, from the Korn Shell (ksh) – which was over 20 years ago
+now.
+
+So while I had resisted the change for a while, I have finally taken the plunge.
+I am, of course, hardly the first to do so or to document it, as a web search
+will reveal; there's even [a
+book](https://www.amazon.com/Bash-Shell-Conquering-Command-Line/dp/1590593766)
+on the topic. As I find useful posts from previous adventurers
+online, I'll link to them here. But the particulars of my setup will
+necessarily be different, and I hope that seeing what I'm doing and why will
+help you make your shell environment easier to get things done in. 
+
+Some housekeeping first: while Catalina comes with a `/bin/zsh`, it is slightly
+out of date: version 5.7.1. Plus, I use a couple Macs that I have kept back
+on Mojave for various reasons, which has an even older version; I want my
+shell environment to be consistent across my usual machines. So I have
+used [Homebrew](https://brew.sh) to install the latest version in
+/usr/local/bin, which as of this writing is 5.8. I'll try to point out when I'm
+doing something that won't work in older versions. 
+
+To ensure that I'm always running the correct zsh, I have this in my ~/.zshrc
+file (see below):
+
+    if [[ $(zsh -c 'echo $ZSH_VERSION') > $ZSH_VERSION ]]; then
+      exec zsh ${-+-$-} "$@"
+    fi
+
+The condition should prevent an infinite loop. :) 
+
+But that brings us to our first topic: startup files. 
+
+## Zdots and Profiles and Env files, Oh my! 
+
+When it comes to shell startup files, zsh has an embarassment of riches. That's basically a multiple-inheritance problem; Zsh is directly inspired by bash and
+tcsh, which were in turn inspired by ksh and the original csh, and all those
+influences accumulate.
+
+The original Bourne shell only sourced any files automatically in login shells;
+these files would presumably set everything they needed in the form of
+environment variables that child shells would inherit. So you got
+`/etc/profile` and `$HOME/.profile` exeucted on initial login, and that was it.
+
+David Korn and team recognized the need to perform some shell initialization
+that wasn't automatically inherited by child processes. So one of the things
+you could do in the `.profile` for ksh was set a parameter called `$ENV` to the
+name of a file; interactive shells would read that file on startup. The most
+common name for the environment file was `.kshrc`, so later versions of ksh
+look for a `.kshrc` if `$ENV` isn't set.
+
+Meanwhile, the C shells had `.[t]cshrc` for all shells and `.login` for login
+shells, but ran them in that order; `.login` was executed _after_ `.cshrc`. They also introduced the complementary `.logout` file, which is executed right 
+before a login shell exits. (You could arrange for something like this in the
+Bourne or Korn shells via `trap`, but there was no file executed
+automatically.)
+
+Bash tried to incorporate the best features of the Korn and C shells while
+maintaining compatibility with the Bourne shell.  So login shells run
+`/etc/profile` just like the Bourne shell, and then look the first of
+`.bash_profile`, `.bash_login`, or `.profile` that exists in the user's home
+directory. And if there's a `.bash_logout` file, it gets run just before a login shell exits.
+
+But the `.kshrc` and `$ENV` functions have been split in Bash. The
+`~/.bashrc` file gets executed in interactive shells, while non-interactive
+ones look for a file to execute in the parameter `$BASH_ENV`.  Bash also lets 
+you specify a different file to run instead of .bashrc with the `--rcfile` 
+option, or tell it not to run one at all with `--norc`.
+
+So with all that history, what did Zsh do? Well, it uses something
+similar to the bash model, but a little less complicated, modified to
+allow more familiarity for csh users. 
+
+The first thing it does is allow you to put your dotfiles somewhere other
+than your home directory; if `$ZDOTDIR` is set in the environment, it
+will look in there instead. The filenames are unchanged, though; even
+in a ZDOTDIR, they start with a period.
+
+Zsh runs global and local versions of these files in this order:
+
+    /etc/zshenv
+    ${ZDOTDIR-$HOME}/.zshenv
+        These always run, doesn't matter whether the shell is login or not,
+        interactive or not. You can't stop zsh from executing these files if
+        they exist. So anything that applies to all shells should be set up
+        here. Many users put environment variable settings in here, so that
+        even shells that aren't children of login shells (which can happen
+        in a GUI terminal environment) will have them initialized. So far 
+        I haven't found any settings that don't fit better in a different 
+        file.
+
+    /etc/zprofile
+    ${ZDOTDIR-$HOME}/.zprofile
+        These run in login shells only. I still set my environment variables
+        here, and have Termial/iTerm/etc. set to invoke zsh as a login shell
+        whenever I open a new window.
+
+    /etc/zshrc
+    ${ZDOTDIR-$HOME}/.zshrc
+        These run for interactive shells only. Command completion, aliases,
+        functions you use at the command line - these should all be set up
+        here.
+
+    /etc/zlogin
+    ${ZDOTDIR-$HOME}/.zlogin
+        This runs on login shells only, just like `.zprofile`, but after the
+        .zshrc, so you have the same sequence as the C shells for folks used to
+        those. I don't use it, at least not yet.
+
+    /etc/zlogout
+    ${ZDOTDIR-$HOME}/.zlogout
+         Run before exiting a login shell. I don't do anything with this
+         either.
+
+My home directory dotfiles are actually symlinks into a clone
+of a github repo. I actually have all my shell config files in subdirectories of
+~/lib/_shellname_; each startup file has its own directory, with a `main` file
+that is symlinked to the expected dotfile name, and other files that the
+`main` file sources. That way I can keep things organized with related
+settings grouped together in the same files. I don't currently use ZDOTDIR,
+but just have the symlinks as ~/.zprofile etc. 
+
+My .zprofile at the moment is pretty barebones:
+
+    if [[ $path[(ie)/usr/local/bin] > ${#path[@]} ]]; then
+      path=($HOME/bin /usr/local/bin /usr/local/sbin $path)
+    fi
+
+    if [[ $fpath[(ie)$HOME/lib/zsh/functions] > ${#fpath[@]} ]]; then
+      fpath=($HOME/lib/zsh/functions $fpath)
+    fi
+
+But already you can see I'm embracing some zshisms, specifically the
+inherited-cshism that makes path variables automatically available in 
+array form under the lowercase version of their name. This makes them much
+easier to manipulate programmatically. 
+
+Zsh has a number of expansion modifier flags that are placed in parentheses
+after opening brackets. In the case of an array lookup, the (i) flag
+"inverts" the lookup, so it returns the index at which the string supplied
+_as_ the index is found. If the string is not found, it returns a number greater
+than the length of the array. So both of the above `if`s are simple
+"is this item in the array" checks.
+
+My .zshrc, on the other hand, is already approaching 100 lines, and I have 
+another 180 lines in shell function definitions. But we'll talk about 
+all of those settings as ther categories come up.
