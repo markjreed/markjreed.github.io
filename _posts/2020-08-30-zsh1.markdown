@@ -176,7 +176,7 @@ that match has to be exact.  If the string is not found, the expansion returns
 a number greater than the length of the array. So both of the above `if` 
 statements are performing simple "is this item in the array" checks.
 
-So that's it for my `.zshenv` and `.zprofile`. My `.zshrc`, on the other hand,
+That's it for my `.zshenv` and `.zprofile`. My `.zshrc`, on the other hand,
 is already approaching 100 lines, and I have another 180 lines in shell
 function definitions. But we'll talk about all of those settings as ther
 categories come up in the following posts.
