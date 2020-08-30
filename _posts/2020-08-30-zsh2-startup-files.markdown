@@ -119,6 +119,10 @@ actual dotfile, e.g.
     lrwxr-xr-x  1 mjreed  staff     19 Aug 30 00:49 .zshenv -> lib/zsh/zshenv/main
     lrwxr-xr-x  1 mjreed  staff     18 Aug 21 21:39 .zshrc -> lib/zsh/zshrc/main
 
+The idea is that each `main` file can source other files in its directory, so I
+can organize e.g.  all the things that need to be done in my `.zshrc` into
+different files based on their purpose.
+
 My `lib` directory is itself a symbolic link into a clone of a private GitHub
 repository where I maintain my shell environment. I don't set `ZDOTDIR`, but
 just put the symlinks directly under `$HOME`.
