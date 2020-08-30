@@ -93,21 +93,27 @@ in a ZDOTDIR, they start with a period.
 Zsh runs global and local versions of these files in this order:
 
     /etc/zshenv
+        This file is always run, regardless of whether the shell is login or
+        not, interactive or not. There's no way to stop zsh from executing
+        this file. It can, however, stop zsh from executing any others - if 
+        the environment variable GLOBAL_RCS is unset, then none ofthe other
+        `/etc` files will be read; if `RCS` is unset, then none of the user's
+        personal startup files will be read. Otherwise, we continue:
+
     ${ZDOTDIR-$HOME}/.zshenv
-        These always run, doesn't matter whether the shell is login or not,
-        interactive or not. You can't stop zsh from executing these files if
-        they exist. So anything that applies to all shells should be set up
-        here. Many users put environment variable settings in here, so that
-        even shells that aren't children of login shells (which can happen
-        in a GUI terminal environment) will have them initialized. So far 
-        I haven't found any settings that don't fit better in a different 
-        file.
+        Assuming RCS is still set after /etc/zshenv, this file is run - 
+        again for all shells, regardless of interactivity or login status.
+        So anything that should be set in absolutely all zsh processes goes
+        here. Some users set their environment variables in here, so that
+        they're set even for shells that aren't children of login shells (which
+        can happen in a GUI terminal environment). But I have Terminal and
+        iTerm configured to start my shells as login shells, and so far have
+        not found anything I need to put in here.
 
     /etc/zprofile
     ${ZDOTDIR-$HOME}/.zprofile
-        These run in login shells only. I still set my environment variables
-        here, and have Termial/iTerm/etc. set to invoke zsh as a login shell
-        whenever I open a new window.
+        These run in login shells only. My .zprofile is where I set environment
+        variables.
 
     /etc/zshrc
     ${ZDOTDIR-$HOME}/.zshrc
@@ -126,39 +132,53 @@ Zsh runs global and local versions of these files in this order:
          Run before exiting a login shell. I don't do anything with this
          either.
 
-### My setup 
+### My Setup 
 My home directory dotfiles are actually symlinks into a clone
-of a github repo where I maintain configuration files, personal scripts, etc. The shell dotfiles live in files named lib/_shellname_/_startupfile_/main, which
+of a GitHub repo where I maintain configuration files, personal scripts, etc. The shell dotfiles live in files named `lib/`_shellname_`/`_startupfile_`/main`, which
 source other files in the same subdirectory. That way I can keep things
-organized with related settings together int he same file. While I could
+organized with related settings together in the same file. While I could
 put all the symlinks for zsh directly in `lib/zsh` and set ZDOTDIR, I
 don't currently do that.
+
+My .zshenv currently has this in it:
+
+    if [[ $fpath[(ie)$HOME/lib/zsh/functions] > ${#fpath[@]} ]]; then
+      fpath=($HOME/lib/zsh/functions $fpath)
+    fi
+
+I used to set FPATH in the profile and export it, but I might run other
+shells that also use FPATH, and don't want them trying to run zsh functions,
+or vice-versa. So I set it for every zsh shell and don't export it.
 
 My `.zprofile` (actually `lib/zsh/zprofile/main`) is pretty barebones at the
 moment:
 
     if [[ $path[(ie)/usr/local/bin] > ${#path[@]} ]]; then
       path=($HOME/bin /usr/local/bin /usr/local/sbin $path)
+      export PATH
     fi
 
-    if [[ $fpath[(ie)$HOME/lib/zsh/functions] > ${#fpath[@]} ]]; then
-      fpath=($HOME/lib/zsh/functions $fpath)
-    fi
+    # This turns off the auto-paging feature of AWS CLI 2.x
+    export AWS_PAGER=
 
-But already you can see I'm embracing some zshisms, specifically the
-inherited csh feature that makes path variables automatically available in 
-array form under the lowercase version of their name. This makes them much
-easier to manipulate programmatically. 
+In both of these files you can see I'm already embracing some zshisms,
+most notably the inherited csh feature that makes path variables automatically
+available in array form under the lowercase version of their name. This makes
+them much easier to manipulate programmatically. 
 
-Zsh has a number of expansion modifier flags that are placed in parentheses
-after opening brackets. In the case of an array lookup, the (i) flag
-"inverts" the lookup, so it returns the index at which the element matches
-the string supplied between brackets; the (e) flag means that match has to
-be exact.  If the string is not found, the expansion returns a number greater
-than the length of the array. So both of the above `if`s are simple
-"is this item in the array" checks.
+I'm also taking advantage of the fact that zsh lets you expand array elements
+without curly braces: `RarrayVar[$index]` instead of `${arrayVar[$index]}`. And
+using a couple of its expansion modifier flags, which show up in parenteheses
+after the opening delimiter of expansion expressions like array subscripts.
+Here, the (i) flag _inverts_ the lookup, so it returns the index at which the
+element matches the string supplied as a subscript; the (e) _exact_ flag means
+that match has to be exact.  If the string is not found, the expansion returns
+a number greater than the length of the array. So both of the above `if`s are
+simple "is this item in the array" checks.
 
-So that's it for the `.zprofile`. The `.zshrc`, on the other hand, is already
-approaching 100 lines, and I have another 180 lines in shell function
-definitions. But we'll talk about all of those settings as ther categories come
-up in the following posts.
+So that's it for my `.zshenv` and `.zprofile`. My `.zshrc`, on the other hand,
+is already approaching 100 lines, and I have another 180 lines in shell
+function definitions. But we'll talk about all of those settings as ther
+categories come up in the following posts.
+
+Next time: Prompts!
