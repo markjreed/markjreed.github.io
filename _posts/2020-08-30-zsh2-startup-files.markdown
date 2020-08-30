@@ -39,7 +39,7 @@ automatically, each with both a global and a personal location, for a
 total of up to ten files to think about. While that's a few more than any
 previous shells, a more significant difference is that zsh lets you configure
 a location other than your home directory in which to look for the personal
-version of all these files. If `$ZDOTDIR' is set in the environment, then zsh
+version of all these files. If `$ZDOTDIR` is set in the environment, then zsh
 looks for the files there instead of in the user's home directory.
 
 Here are the files and when they get executed:
