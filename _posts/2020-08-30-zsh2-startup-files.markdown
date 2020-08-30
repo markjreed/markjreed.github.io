@@ -15,7 +15,7 @@ types of shell processes, namely:
 **Interactive shells:** shells that run, well, interactively, reading commands
 from a user at a terminal and responding in real time. You can tell if the
 shell _thinks_ it's interactive by looking to see if the flags parameter `$-`
-contains the latter `i`. The opposite of an interactive shell is a
+contains the letter `i`. The opposite of an interactive shell is a
 non-interactive shell, sometimes called a "batch" shell, such as one invoked
 just to run a script and then exit.
 
